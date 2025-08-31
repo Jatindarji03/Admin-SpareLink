@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axiosInstance from "../utils/axiosInstance";
 
 const SupplierRequest = () => {
   const [requests, setRequests] = useState([]);
@@ -6,30 +7,50 @@ const SupplierRequest = () => {
   const [selectedSupplier, setSelectedSupplier] = useState(null);
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setRequests([
-        { id: 1, name: "John Doe", email: "john@example.com", company: "Acme Corp", status: "Pending" },
-        { id: 2, name: "Jane Smith", email: "jane@example.com", company: "Beta Ltd", status: "Approved" },
-        { id: 3, name: "Bob Brown", email: "bob@example.com", company: "Gamma Inc", status: "Rejected" }
-      ]);
-      setLoading(false);
-    }, 1000);
+    const fetchRequests = async () => {
+      try {
+        const response = await axiosInstance.get('/api/supplier-requests/get-supplier-requests');
+        console.log(response.data.data);
+        setRequests(response.data.data);
+      } catch (error) {
+        console.log("error fetching supplier requests:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchRequests();
+
   }, []);
 
-  const handleAccept = (id) => {
-    setRequests(prev =>
+  // Simulate API call
+  // setTimeout(() => {
+  //   setRequests([
+  //     { id: 1, name: "John Doe", email: "john@example.com", company: "Acme Corp", status: "Pending" },
+  //     { id: 2, name: "Jane Smith", email: "jane@example.com", company: "Beta Ltd", status: "Approved" },
+  //     { id: 3, name: "Bob Brown", email: "bob@example.com", company: "Gamma Inc", status: "Rejected" }
+  //   ]);
+  //   setLoading(false);
+  // }, 1000);
+
+  const handleAccept = async (id) => {
+    try{
+      await axiosInstance.put(`/api/supplier-requests/supplier-request-approvel/${id}`,{ status: "approved" });
+      setRequests(prev =>
       prev.map(req =>
-        req.id === id ? { ...req, status: "Approved" } : req
+        req._id === id ? { ...req, status: "approved" } : req
       )
     );
     alert("Approval email sent to supplier.");
+    }catch(error){
+      console.log("Error approving supplier:", error);
+    }
+    
   };
 
   const handleReject = (id) => {
     setRequests(prev =>
       prev.map(req =>
-        req.id === id ? { ...req, status: "Rejected" } : req
+        req._id === id ? { ...req, status: "rejected" } : req
       )
     );
     alert("Rejection email sent to supplier.");
@@ -44,6 +65,8 @@ const SupplierRequest = () => {
   };
 
   if (loading) return <div className="text-center mt-5">Loading supplier requests...</div>;
+  if(requests.length==0) return <div className="text-center mt-5">No supplier requests found</div>;
+
 
   return (
     <div className="container mt-4">
@@ -64,23 +87,23 @@ const SupplierRequest = () => {
           </thead>
           <tbody>
             {requests.map(req => (
-              <tr key={req.id}>
-                <td>{req.name}</td>
-                <td>{req.email}</td>
-                <td>{req.company}</td>
+              <tr key={req._id}>
+                <td>{req.userId.name}</td>
+                <td>{req.userId.email}</td>
+                <td>{req.shopName}</td>
                 <td>
                   <span className={`badge 
-                    ${req.status === "Pending" ? "bg-warning text-dark" : ""} 
-                    ${req.status === "Approved" ? "bg-success" : ""} 
-                    ${req.status === "Rejected" ? "bg-danger" : ""}`}>
+                    ${req.status === "pending" ? "bg-warning text-dark" : ""} 
+                    ${req.status === "approved" ? "bg-success" : ""} 
+                    ${req.status === "rejected" ? "bg-danger" : ""}`}>
                     {req.status}
                   </span>
                 </td>
                 <td>
-                  {req.status === "Pending" && (
+                  {req.status === "pending" && (
                     <>
-                      <button className="btn btn-sm btn-success me-2" onClick={() => handleAccept(req.id)}>Accept</button>
-                      <button className="btn btn-sm btn-danger me-2" onClick={() => handleReject(req.id)}>Reject</button>
+                      <button className="btn btn-sm btn-success me-2" onClick={() => handleAccept(req._id)}>Accept</button>
+                      <button className="btn btn-sm btn-danger me-2" onClick={() => handleReject(req._id)}>Reject</button>
                     </>
                   )}
                   <button className="btn btn-sm btn-info" onClick={() => showDetails(req)}>View</button>
@@ -89,7 +112,7 @@ const SupplierRequest = () => {
             ))}
           </tbody>
         </table>
-      )}    
+      )}
 
       {/* Supplier Details Modal */}
       {selectedSupplier && (
@@ -101,9 +124,9 @@ const SupplierRequest = () => {
                 <button type="button" className="btn-close" onClick={closeDetails}></button>
               </div>
               <div className="modal-body">
-                <p><strong>Name:</strong> {selectedSupplier.name}</p>
-                <p><strong>Email:</strong> {selectedSupplier.email}</p>
-                <p><strong>Company:</strong> {selectedSupplier.company}</p>
+                <p><strong>Name:</strong> {selectedSupplier.userId.name}</p>
+                <p><strong>Email:</strong> {selectedSupplier.userId.email}</p>
+                <p><strong>Company:</strong> {selectedSupplier.shopName}</p>
                 <p><strong>Status:</strong> {selectedSupplier.status}</p>
               </div>
               <div className="modal-footer">
