@@ -24,7 +24,7 @@ const Login = () => {
             if (roleName !== 'admin') {
                 setError(`you don't have admin access`)
             }else{
-                navigate('/supplier-requests')
+                navigate('/admin')
             }
         } catch (error) {
             console.error('Login error:', error);

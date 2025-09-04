@@ -79,3 +79,18 @@ button:focus-visible {
   }
   
 }
+/* .category-card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
+}
+
+.category-card:hover {
+  transform: scale(1.05);
+}
+
+
+.swiper-pagination-fraction, .swiper-pagination-custom, .swiper-horizontal > .swiper-pagination-bullets, .swiper-pagination-bullets.swiper-pagination-horizontal {
+    bottom: var(--swiper-pagination-bottom, -4px) !important;
+    
+} */
