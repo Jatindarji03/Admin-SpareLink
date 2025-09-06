@@ -1,47 +1,107 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axiosInstance from "../../utils/axiosInstance.js";
+
 
 const Category = () => {
-  // Dummy categories
   const [categories, setCategories] = useState([
-    { _id: 1, name: "Engine Parts" },
-    { _id: 2, name: "Brakes" },
-    { _id: 3, name: "Suspension" },
-    { _id: 4, name: "Electrical" },
-    { _id: 5, name: "Tires" },
-    { _id: 6, name: "Accessories" },
   ]);
 
   const [name, setName] = useState("");
   const [editId, setEditId] = useState(null);
 
+  const createCategory = async (name) => {
+    try {
+      const response = await axiosInstance.post('/api/category/create-category', { name });
+      console.log(response);
+      return response.data.data;
+    } catch (error) {
+      if (error.response?.status === 400) {
+        alert(error.response.data.message); // Show error message from backend
+      } else {
+        console.error("Error creating category:", error);
+        alert("Something went wrong. Please try again.");
+      }
+      return null
+    }
+  }
+
+  const updateCategory = async (_id, name) => {
+    try {
+      const response = await axiosInstance.put(`/api/category/update-category/${_id}`, { name });
+      alert(response.data.message);
+      return response.data.data;
+    } catch (error) {
+      if (error.response?.status == 400) {
+        alert(error.response.data.message);
+      } else {
+        console.error("Error creating category:", error);
+        alert("Something went wrong. Please try again.");
+      }
+      return null;
+    }
+
+  }
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axiosInstance.get('/api/category/get-category');
+      setCategories(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const deleteCategory = async (id) => {
+    try {
+      const response = await axiosInstance.delete(`/api/category/delete-category/${id}`);
+      alert(response.data.message);
+      return true;
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to delete category");
+      return false;
+    }
+  }
+  useEffect(() => {
+    fetchCategories();
+  }, [])
+
   // Add or Update Category
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name.trim()) return;
 
     if (editId) {
       // Update existing
-      setCategories(
-        categories.map((cat) =>
-          cat._id === editId ? { ...cat, name } : cat
-        )
-      );
+      const updatedCategory = await updateCategory(editId, name);
+      if (updateCategory) {
+        setCategories(
+          categories.map((cat) =>
+            cat._id === editId ? { ...cat, name } : cat
+          )
+        );
+      }
+
       setEditId(null);
     } else {
       // Add new
-      const newCategory = { _id: Date.now(), name };
-      setCategories([...categories, newCategory]);
+      const newCategory = await createCategory(name);
+      if (newCategory) {
+        setCategories([...categories, newCategory]);
+      }
     }
 
     setName("");
   };
 
   // Delete category
-  const handleDelete = (_id) => {
-    setCategories(categories.filter((cat) => cat._id !== _id));
-    if (editId === _id) {
-      setEditId(null);
-      setName("");
+  const handleDelete = async (_id) => {
+    const isDeleted = await deleteCategory(_id);
+    if (isDeleted) {
+      setCategories(categories.filter((cat) => cat._id !== _id));
+      if (editId === _id) {
+        setEditId(null);
+        setName("");
+      }
     }
   };
 
