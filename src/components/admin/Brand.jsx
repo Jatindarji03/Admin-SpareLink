@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axiosInstance from "../../utils/axiosInstance.js";
 
 const Brand = () => {
   const [brands, setBrands] = useState([
@@ -9,16 +10,32 @@ const Brand = () => {
   const [form, setForm] = useState({ name: "", logo: null });
   const [editingId, setEditingId] = useState(null);
 
+  const createBrand =async (form)=>{
+    try{
+      const response = await axiosInstance.post('/api/car-brand/create-brand',form,{
+        headers:{"Content-Type": "multipart/form-data"}
+      })
+        return response.data.data;
+    }catch(error){
+       if (error.response?.status === 400) {
+        alert(error.response.data.message); // Show error message from backend
+      } else {
+        console.error("Error creating category:", error);
+        alert("Something went wrong. Please try again.");
+      }
+      return null
+    }
+  }
   // Handle Image Upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setForm({ ...form, logo: URL.createObjectURL(file) });
+      setForm({ ...form, logo: file });
     }
   };
 
   // Add / Update Brand
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name.trim()) return;
 
@@ -32,7 +49,11 @@ const Brand = () => {
       setEditingId(null);
     } else {
       // Add new brand
-      setBrands([...brands, { _id: Date.now(), ...form }]);
+      const newBrand = await createBrand(form);
+      if(newBrand){
+        setBrands([...brands, { _id: Date.now(), ...form }]);
+      }
+
     }
 
     setForm({ name: "", logo: null });
