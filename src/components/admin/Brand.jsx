@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance.js";
-
+import { BASE_URL } from "../../utils/axiosInstance.js";
 const Brand = () => {
   const [brands, setBrands] = useState([
-    { _id: 1, name: "Toyota", logo: "https://imgd.aeplcdn.com/642x336/n/cw/ec/124027/hyryder-exterior-right-front-three-quarter-73.jpeg?isig=0&q=80" },
-    { _id: 2, name: "Ford", logo: "s" },
+    
   ]);
 
   const [form, setForm] = useState({ name: "", logo: null });
@@ -15,7 +14,8 @@ const Brand = () => {
       const response = await axiosInstance.post('/api/car-brand/create-brand',form,{
         headers:{"Content-Type": "multipart/form-data"}
       })
-        return response.data.data;
+        // return response.data.data;
+        setBrands([...brands, response.data.data]);
     }catch(error){
        if (error.response?.status === 400) {
         alert(error.response.data.message); // Show error message from backend
@@ -60,7 +60,9 @@ const Brand = () => {
   };
 
   // Delete Brand
-  const handleDelete = (_id) => {
+  const handleDelete = async(_id) => {
+    const res=await axiosInstance.delete(`/api/car-brand/delete-brand/${_id}`);
+    if(!res) return;
     setBrands(brands.filter((b) => b._id !== _id));
   };
 
@@ -70,6 +72,25 @@ const Brand = () => {
     setEditingId(brand._id);
   };
 
+  // Fetch Brands (Simulated with static data here)
+  const fetchBrands = async() => {
+    try {
+      const res=await axiosInstance.get('/api/car-brand/get-brand');
+      if(!res) return;
+      console.log("brands are",res.data.data);
+      setBrands(res.data.data);  
+
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  useEffect(() => {
+    fetchBrands();
+    return ()=>{
+      setBrands([]);
+    }
+  }, []);
   return (
     <div className="container mt-4">
       {/* Add/Update Brand Form */}
@@ -140,7 +161,7 @@ const Brand = () => {
                   <td>
                     {b.logo ? (
                       <img
-                        src={"https://imgd.aeplcdn.com/642x336/n/cw/ec/124027/hyryder-exterior-right-front-three-quarter-73.jpeg?isig=0&q=80"}
+                        src={BASE_URL+"/"+b.logo}
                         alt={b.name}
                         style={{
                           width: "60px",

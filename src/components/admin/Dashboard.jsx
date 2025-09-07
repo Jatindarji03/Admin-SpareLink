@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import { Bar, Pie, Line, Doughnut, Radar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -13,6 +13,7 @@ import {
   LineElement,
   RadialLinearScale,
 } from "chart.js";
+import axiosInstance from "../../utils/axiosInstance";
 
 // Register chart.js components
 ChartJS.register(
@@ -29,9 +30,27 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
+  const colors=["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"];
 
-    const [activeTab, setActiveTab] = React.useState("lastMonth");
+    const [activeTab, setActiveTab] = useState("lastMonth");
+    const [category, setCategory] = useState([]);
   // ---------------- Revenue Data ----------------
+  // get category
+  const getCategories = async () => {
+    try {
+      const response = await axiosInstance.get("api/category/get-category");
+      const data = await response.data.data;
+
+      setCategory(data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  React.useEffect(() => {
+    getCategories();
+  }, []);
+
   const revenueLastMonth = {
     labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
     datasets: [
@@ -80,17 +99,12 @@ const Dashboard = () => {
   };
   // ---------------- Spare Parts Data ----------------
   const sparePartsCategory = {
-    labels: ["Engine", "Brakes", "Suspension", "Electrical", "Body"],
+    labels: category.map((cat) => cat.name),
     datasets: [
       {
-        data: [40, 25, 15, 10, 10],
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.7)",
-          "rgba(54, 162, 235, 0.7)",
-          "rgba(255, 206, 86, 0.7)",
-          "rgba(75, 192, 192, 0.7)",
-          "rgba(153, 102, 255, 0.7)",
-        ],
+        data: [40, 25, 15],
+        backgroundColor: colors.slice(0, category.length),
+        hoverBackgroundColor: colors.slice(0, category.length).map(color => color.replace("0.7", "0.9")),
       },
     ],
   };

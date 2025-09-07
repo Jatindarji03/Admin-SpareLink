@@ -25,6 +25,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="*" element={<h1>404 Not Found</h1>} />
       <Route path="/supplier-requests" element={<SupplierRequest />} />
       <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard/>} />
         <Route path="category" element={<Category />} />
         <Route path="brand" element={<Brand />} />

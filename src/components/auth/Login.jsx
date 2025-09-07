@@ -21,6 +21,7 @@ const Login = () => {
         try {
             const response = await axiosInstance.post('/api/users/login', { email, password });
             const roleName = response.data.data.roleId.roleName;
+            
             if (roleName !== 'admin') {
                 setError(`you don't have admin access`)
             }else{
