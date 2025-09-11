@@ -26,6 +26,9 @@ const Login = () => {
                 setError(`you don't have admin access`)
             }else{
                 navigate('/admin')
+                 localStorage.setItem('token', response.data.authtoken); // Store token in localStorage
+        localStorage.setItem('user', JSON.stringify(response.data.data._id)); // Store user data in localStorage
+        localStorage.setItem('role', JSON.stringify(response.data.data.roleId.roleName)); // Store user data in localStorage
             }
         } catch (error) {
             console.error('Login error:', error);

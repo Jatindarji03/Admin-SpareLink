@@ -47,13 +47,18 @@ const SupplierRequest = () => {
     
   };
 
-  const handleReject = (id) => {
-    setRequests(prev =>
+  const handleReject = async(id) => {
+    try{
+      await axiosInstance.put(`/api/supplier-requests/supplier-request-approvel/${id}`,{ status: "rejected" });
+      setRequests(prev =>
       prev.map(req =>
         req._id === id ? { ...req, status: "rejected" } : req
       )
     );
-    alert("Rejection email sent to supplier.");
+     alert("Rejection email sent to supplier.");
+    }catch(error){
+       console.log("Error approving supplier:", error);
+    }
   };
 
   const showDetails = (supplier) => {
@@ -90,7 +95,7 @@ const SupplierRequest = () => {
               <tr key={req._id}>
                 <td>{req.userId.name}</td>
                 <td>{req.userId.email}</td>
-                <td>{req.shopName}</td>
+                <td>{req.storeName}</td>
                 <td>
                   <span className={`badge 
                     ${req.status === "pending" ? "bg-warning text-dark" : ""} 
