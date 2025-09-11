@@ -80,12 +80,12 @@ const Sidebar = () => {
                   >
                     <FaPlus /> Model
                   </Link>
-                  <Link
+                  {/* <Link
                     to="/admin/variant"
                     className="nav-link text-white d-flex align-items-center gap-2"
                   >
                     <FaPlus /> Variant
-                  </Link>
+                  </Link> */}
                 </div>
               )}
             </div>
