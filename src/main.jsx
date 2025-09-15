@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Login from './components/auth/Login.jsx'
 import SupplierRequest from './components/SupplierRequest.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Provider } from 'react-redux'
+import store from './Store/Store.js'
 
 import AdminLayout from './components/AdminLayout/AdminLayout.jsx'
 import Category from './components/admin/Category.jsx'
@@ -18,6 +20,7 @@ import SpareParts from './components/spareparts/SpareParts.jsx'
 import Dashboard from './components/admin/Dashboard.jsx'
 
 createRoot(document.getElementById('root')).render(
+  <Provider store={store}>
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />} />
@@ -37,5 +40,6 @@ createRoot(document.getElementById('root')).render(
 
     </Routes>
 
-  </BrowserRouter>,
+  </BrowserRouter>
+  </Provider>
 )
