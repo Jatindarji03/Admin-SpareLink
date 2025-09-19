@@ -1,26 +1,17 @@
 import React from 'react'
 import Login from './components/auth/Login'
 import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify';
+import AOS from "aos";
+import { useEffect } from 'react';
+import "aos/dist/aos.css";
 const App = () => {
+  // Init AOS
+    useEffect(() => {
+      AOS.init({ duration: 800, once: true });
+    }, []);
   return (
     <div>
-       <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-                toastStyle={{
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                }}
-            />
+       
       <Login/>
     </div>
   )

@@ -123,10 +123,10 @@ const Model = () => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-3">
       {/* Add/Update Model Form */}
       <div className="card shadow-sm border-0 rounded-4 mb-4">
-        <div className="card-header fw-bold">
+        <div className="card-header fw-bold fs-3">
           {editingId ? "Update Model" : "Add Model"}
         </div>
         <div className="card-body">
@@ -196,7 +196,7 @@ const Model = () => {
           <table className="table table-bordered table-hover align-middle">
             <thead className="table-dark">
               <tr>
-                <th>ID</th>
+                
                 <th>Model</th>
                 <th>Brand</th>
                 <th>Image</th>
@@ -207,7 +207,7 @@ const Model = () => {
               {Array.isArray(models) && models.length > 0 ? (
                 models.map((m) => (
                   <tr key={m._id}>
-                    <td>{m._id}</td>
+                  
                     <td>{m.carModel}</td>
                     <td>
                       {brands.find((b) => b._id === m.carBrand)?.name ||

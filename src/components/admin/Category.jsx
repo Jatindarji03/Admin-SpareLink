@@ -115,8 +115,8 @@ const Category = () => {
     <div className="container mt-3">
       {/* Card Wrapper */}
       <div className="card shadow-sm border-0 rounded-4">
-        <div className="p-2 border-bottom">
-          <h4 className="mb-0">Manage Categories</h4>
+        <div className="p-2 border-bottom ">
+          <h4 className="mb-0 fw-bolder fs-3">Manage Categories</h4>
         </div>
 
         <div className="card-body p-4">
@@ -168,7 +168,7 @@ const Category = () => {
               <table className="table table-bordered table-hover align-middle">
                 <thead className="table-dark">
                   <tr>
-                    <th style={{ width: "100px" }}>ID</th>
+                    
                     <th>Category Name</th>
                     <th style={{ width: "200px" }}>Actions</th>
                   </tr>
@@ -176,7 +176,7 @@ const Category = () => {
                 <tbody>
                   {categories.map((cat) => (
                     <tr key={cat._id}>
-                      <td>{cat._id}</td>
+                      
                       <td>{cat.name}</td>
                       <td>
                         <button

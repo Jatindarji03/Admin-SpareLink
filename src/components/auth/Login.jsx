@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
 import axiosInstance from '../../utils/axiosInstance';
 
@@ -12,6 +12,13 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const token=localStorage.getItem("token");
+    useEffect(()=>{
+
+        if(token){
+            navigate("/admin");
+        }
+    },[]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -102,7 +109,7 @@ const Login = () => {
                     >
                         <div className="logo-container">
                             <div className="logo">
-                                <span className="logo-text">SP</span>
+                                <span className="logo-text">SL</span>
                             </div>
                         </div>
                         <h2 className="login-title">Admin Login</h2>

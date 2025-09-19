@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FaBars,
   FaBox,
@@ -8,6 +8,7 @@ import {
   FaUser,
   FaChevronDown,
   FaChevronRight,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleSidebar } from "../../Store/Slice/SidebarSlice.js";
@@ -17,6 +18,7 @@ const Sidebar = () => {
   const [isManageOpen, setIsManageOpen] = useState(false);
   const isOpen = useSelector((state) => state.sidebar.isOpen);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Animation variants
   const sidebarVariants = {
@@ -72,9 +74,17 @@ const Sidebar = () => {
     },
   };
 
+  // Logout Handler
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // clear token
+    localStorage.removeItem("user");
+    localStorage.removeItem("role");
+    navigate("/login"); // redirect
+  };
+
   return (
     <>
-      {/* Toggle button with hover animation */}
+      {/* Toggle button */}
       <motion.button
         onClick={() => dispatch(toggleSidebar(isOpen))}
         className="btn btn-primary position-fixed top-0 start-0 m-3"
@@ -87,7 +97,7 @@ const Sidebar = () => {
         <FaBars size={20} />
       </motion.button>
 
-      {/* Sidebar with animation */}
+      {/* Sidebar */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -96,187 +106,149 @@ const Sidebar = () => {
             initial="closed"
             animate="open"
             exit="closed"
-            className="bg-dark text-white vh-100 position-fixed top-0 start-0 p-3"
+            className="bg-dark text-white vh-100 position-fixed top-0 start-0 p-3 d-flex flex-column justify-content-between"
             style={{ width: "235px", zIndex: 1040 }}
           >
-            <motion.h4 
-              className="fw-bold border-bottom pb-3 mb-3 mt-5"
-              variants={itemVariants}
-            >
-              Admin Panel
-            </motion.h4>
-            
-            <motion.nav className="nav flex-column gap-2" variants={itemVariants}>
-              {/* Dashboard Link */}
-              <motion.div
-                whileHover={{ x: 8, backgroundColor: "rgba(255,255,255,0.1)" }}
-                transition={{ duration: 0.2 }}
-                style={{ borderRadius: "5px" }}
+            {/* Top Section */}
+            <div>
+              <motion.h4
+                className="fw-bold border-bottom pb-3 mb-3 mt-5"
+                variants={itemVariants}
               >
-                <Link
-                  to="/admin/dashboard"
-                  className="nav-link text-white d-flex align-items-center gap-2"
-                >
-                  <motion.div
-                    whileHover={{ rotate: 360 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <FaBox />
-                  </motion.div>
-                  Dashboard
-                </Link>
-              </motion.div>
+                Admin Panel
+              </motion.h4>
 
-              {/* Spare Parts Link */}
-              <motion.div
-                whileHover={{ x: 8, backgroundColor: "rgba(255,255,255,0.1)" }}
-                transition={{ duration: 0.2 }}
-                style={{ borderRadius: "5px" }}
+              <motion.nav
+                className="nav flex-column gap-2"
+                variants={itemVariants}
               >
-                <Link
-                  to="/admin/spareparts"
-                  className="nav-link text-white d-flex align-items-center gap-2"
-                >
-                  <motion.div
-                    whileHover={{ scale: 1.2 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <FaClipboardList />
-                  </motion.div>
-                  Spare Parts
-                </Link>
-              </motion.div>
-
-              {/* Product Management Section */}
-              <motion.div variants={itemVariants}>
-                <motion.button
-                  className="btn btn-link text-white text-start w-100 d-flex justify-content-between align-items-center"
-                  onClick={() => setIsManageOpen(!isManageOpen)}
-                  whileHover={{ x: 8, backgroundColor: "rgba(255,255,255,0.1)" }}
-                  transition={{ duration: 0.2 }}
-                  style={{ borderRadius: "5px" }}
-                >
-                  <span className="d-flex align-items-center gap-2">
-                    <motion.div
-                      whileHover={{ scale: 1.2 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <FaClipboardList />
-                    </motion.div>
-                    Product Management
-                  </span>
-                  <motion.div
-                    animate={{ rotate: isManageOpen ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {isManageOpen ? <FaChevronDown /> : <FaChevronRight />}
-                  </motion.div>
-                </motion.button>
-
-                {/* Submenu with staggered animation */}
-                <AnimatePresence>
-                  {isManageOpen && (
-                    <motion.div
-                      key="submenu"
-                      variants={submenuVariants}
-                      initial="closed"
-                      animate="open"
-                      exit="closed"
-                      className="ms-4 d-flex flex-column gap-2 overflow-hidden"
-                    >
-                      <motion.div
-                        variants={itemVariants}
-                        whileHover={{ x: 6, backgroundColor: "rgba(255,255,255,0.1)" }}
-                        transition={{ duration: 0.2 }}
-                        style={{ borderRadius: "5px" }}
-                      >
-                        <Link
-                          to="/admin/category"
-                          className="nav-link text-white d-flex align-items-center gap-2"
-                        >
-                          <motion.div
-                            whileHover={{ rotate: 180 }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            <FaPlus />
-                          </motion.div>
-                          Category
-                        </Link>
-                      </motion.div>
-
-                      <motion.div
-                        variants={itemVariants}
-                        whileHover={{ x: 6, backgroundColor: "rgba(255,255,255,0.1)" }}
-                        transition={{ duration: 0.2 }}
-                        style={{ borderRadius: "5px" }}
-                      >
-                        <Link
-                          to="/admin/brand"
-                          className="nav-link text-white d-flex align-items-center gap-2"
-                        >
-                          <motion.div
-                            whileHover={{ rotate: 180 }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            <FaPlus />
-                          </motion.div>
-                          Brand
-                        </Link>
-                      </motion.div>
-
-                      <motion.div
-                        variants={itemVariants}
-                        whileHover={{ x: 6, backgroundColor: "rgba(255,255,255,0.1)" }}
-                        transition={{ duration: 0.2 }}
-                        style={{ borderRadius: "5px" }}
-                      >
-                        <Link
-                          to="/admin/model"
-                          className="nav-link text-white d-flex align-items-center gap-2"
-                        >
-                          <motion.div
-                            whileHover={{ rotate: 180 }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            <FaPlus />
-                          </motion.div>
-                          Model
-                        </Link>
-                      </motion.div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-
-              {/* Other Menu Items */}
-              {[
-                { to: "/admin/orders", icon: FaClipboardList, text: "Requests" },
-                { to: "/admin/profile", icon: FaUser, text: "User Management" },
-                { to: "/admin/quotation", icon: FaClipboardList, text: "Supplier Management" },
-                { to: "/admin/analytics", icon: FaClipboardList, text: "Analytics Stats" },
-              ].map((item, index) => (
+                {/* Dashboard */}
                 <motion.div
-                  key={item.to}
-                  variants={itemVariants}
                   whileHover={{ x: 8, backgroundColor: "rgba(255,255,255,0.1)" }}
                   transition={{ duration: 0.2 }}
                   style={{ borderRadius: "5px" }}
                 >
                   <Link
-                    to={item.to}
+                    to="/admin/dashboard"
                     className="nav-link text-white d-flex align-items-center gap-2"
                   >
-                    <motion.div
-                      whileHover={{ scale: 1.2 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <item.icon />
-                    </motion.div>
-                    {item.text}
+                    <FaBox />
+                    Dashboard
                   </Link>
                 </motion.div>
-              ))}
-            </motion.nav>
+
+                {/* Spare Parts */}
+                <motion.div
+                  whileHover={{ x: 8, backgroundColor: "rgba(255,255,255,0.1)" }}
+                  transition={{ duration: 0.2 }}
+                  style={{ borderRadius: "5px" }}
+                >
+                  <Link
+                    to="/admin/spareparts"
+                    className="nav-link text-white d-flex align-items-center gap-2"
+                  >
+                    <FaClipboardList />
+                    Spare Parts
+                  </Link>
+                </motion.div>
+
+                {/* Product Management Dropdown */}
+                <motion.div variants={itemVariants}>
+                  <motion.button
+                    className="btn btn-link text-white text-start w-100 d-flex justify-content-between align-items-center"
+                    onClick={() => setIsManageOpen(!isManageOpen)}
+                    whileHover={{
+                      x: 8,
+                      backgroundColor: "rgba(255,255,255,0.1)",
+                    }}
+                    transition={{ duration: 0.2 }}
+                    style={{ borderRadius: "5px" }}
+                  >
+                    <span className="d-flex align-items-center gap-2">
+                      <FaClipboardList />
+                      Product Management
+                    </span>
+                    <motion.div
+                      animate={{ rotate: isManageOpen ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {isManageOpen ? <FaChevronDown /> : <FaChevronRight />}
+                    </motion.div>
+                  </motion.button>
+
+                  {/* Submenu */}
+                  <AnimatePresence>
+                    {isManageOpen && (
+                      <motion.div
+                        key="submenu"
+                        variants={submenuVariants}
+                        initial="closed"
+                        animate="open"
+                        exit="closed"
+                        className="ms-4 d-flex flex-column gap-2 overflow-hidden"
+                      >
+                        <Link
+                          to="/admin/category"
+                          className="nav-link text-white"
+                        >
+                          <FaPlus /> Category
+                        </Link>
+                        <Link to="/admin/brand" className="nav-link text-white">
+                          <FaPlus /> Brand
+                        </Link>
+                        <Link to="/admin/model" className="nav-link text-white">
+                          <FaPlus /> Model
+                        </Link>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+
+                {/* Other Items */}
+                {[
+                  
+                  {
+                    to: "/admin/quotation",
+                    icon: FaClipboardList,
+                    text: "Supplier Management",
+                  },
+                  {
+                    to: "/admin/analytics",
+                    icon: FaClipboardList,
+                    text: "Analytics Stats",
+                  },
+                ].map((item) => (
+                  <motion.div
+                    key={item.to}
+                    variants={itemVariants}
+                    whileHover={{
+                      x: 8,
+                      backgroundColor: "rgba(255,255,255,0.1)",
+                    }}
+                    transition={{ duration: 0.2 }}
+                    style={{ borderRadius: "5px" }}
+                  >
+                    <Link
+                      to={item.to}
+                      className="nav-link text-white d-flex align-items-center gap-2"
+                    >
+                      <item.icon />
+                      {item.text}
+                    </Link>
+                  </motion.div>
+                ))}
+              </motion.nav>
+            </div>
+
+            {/* Bottom Logout Button */}
+            <motion.button
+              onClick={handleLogout}
+              className="btn btn-danger w-100 rounded-pill mt-3 d-flex align-items-center justify-content-center gap-2"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FaSignOutAlt /> Logout
+            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>

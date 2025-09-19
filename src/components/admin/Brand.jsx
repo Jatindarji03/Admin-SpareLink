@@ -92,10 +92,10 @@ const Brand = () => {
     }
   }, []);
   return (
-    <div className="container mt-4">
+    <div className="container mt-3">
       {/* Add/Update Brand Form */}
       <div className="card shadow-sm border-0 rounded-4 mb-4">
-        <div className="card-header fw-bold">
+        <div className="card-header fw-bold fs-3">
           {editingId ? "Update Brand" : "Add Brand"}
         </div>
         <div className="card-body">
@@ -147,7 +147,7 @@ const Brand = () => {
           <table className="table table-bordered table-hover align-middle">
             <thead className="table-dark">
               <tr>
-                <th>ID</th>
+                
                 <th>Brand</th>
                 <th>Logo</th>
                 <th>Actions</th>
@@ -156,7 +156,7 @@ const Brand = () => {
             <tbody>
               {brands.map((b) => (
                 <tr key={b._id}>
-                  <td>{b._id}</td>
+                  
                   <td>{b.name}</td>
                   <td>
                     {b.logo ? (
@@ -165,7 +165,7 @@ const Brand = () => {
                         alt={b.name}
                         style={{
                           width: "60px",
-                          height: "40px",
+                          height: "60px",
                           objectFit: "contain",
                         }}
                         className="rounded shadow-sm"
