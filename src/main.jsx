@@ -18,11 +18,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import SpareParts from './components/spareparts/SpareParts.jsx'
 import Dashboard from './components/admin/Dashboard.jsx'
+import ProtectRoute from './protectroute/ProtectRoute.jsx';
+import NotFound from './components/notfoundpage/NotFound.jsx'
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-  <BrowserRouter>
-  <ToastContainer
+    <BrowserRouter>
+      <ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar={false}
@@ -34,24 +36,28 @@ createRoot(document.getElementById('root')).render(
         pauseOnHover
         theme="colored" // you can use "light", "dark", or "colored"
       />
-    <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="*" element={<h1>404 Not Found</h1>} />
-      <Route path="/supplier-requests" element={<SupplierRequest />} />
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<Dashboard />} />
-        <Route path="dashboard" element={<Dashboard/>} />
-        <Route path="category" element={<Category />} />
-        <Route path="brand" element={<Brand />} />
-        <Route path="model" element={<Model/>} />
-        <Route path="variant" element={<Variant/>} />
-        <Route path='spareparts' element={<SpareParts/>} />
-        <Route path='quotation' element={<SupplierRequest/>} />
-      </Route>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/login" element={<Login />} />
 
-    </Routes>
+        <Route path="*" element={<NotFound />} />
+        <Route element={<ProtectRoute />}>
+          <Route path="/supplier-requests" element={<SupplierRequest />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="category" element={<Category />} />
+            <Route path="brand" element={<Brand />} />
+            <Route path="model" element={<Model />} />
+            <Route path="variant" element={<Variant />} />
+            <Route path="spareparts" element={<SpareParts />} />
+            <Route path="quotation" element={<SupplierRequest />} />
+          </Route>
+        </Route>
 
-  </BrowserRouter>
+
+      </Routes>
+
+    </BrowserRouter>
   </Provider>
 )
